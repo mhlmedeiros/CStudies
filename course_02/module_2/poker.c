@@ -244,7 +244,7 @@ int is_full_house(int pips[])
 int is_straight(int pips[])
 {
     int i, seq=0;
-    for (i = 0; i < 16; i++)
+    for (i = 0; i <= 13; i++)
     {
         if (pips[i % 13]>0)
             ++seq;
@@ -337,18 +337,22 @@ void evaluate_test(card hand[])
 
 void evaluate_hand(card hand[], strength_counts *strengths)
 {
-    int suits[4] = {0};
-    int pips[13] = {0};
+    int i = -1, sum = 0;
+    int suits[4]={0}, pips[13]={0}, pips_suit[13]={0};
+
+    sort_hand(hand, HAND_SIZE);
+
     count_suits(hand, suits);
-    count_pips(hand, pips,7);
+    count_pips(hand, pips, 7);
+    count_pips_suit(hand, suits, pips_suit);
 
     strengths->total++;
 
-    if (is_royal(suits, pips)){
+    if (is_royal(suits, pips_suit)){
         strengths->royal++;
         return ;
     }
-    else if (is_straight_flush(suits, pips)){
+    else if (is_straight_flush(suits, pips_suit)){
         strengths->straight_flush++;
         return ;
     }
@@ -430,7 +434,7 @@ void run_until(card deck[]){
     build_hand(deck, hand, try);
     evaluate_hand(hand, &strengths);
 
-    while(strengths.royal==0){
+    while(strengths.straight_flush==0){
         build_hand(deck, hand, ++try);
         evaluate_hand(hand, &strengths);
     }
@@ -439,44 +443,25 @@ void run_until(card deck[]){
 }
 
 
-
 int main(void){
     card deck[DECK_SIZE];
-    //card hand[HAND_SIZE];
-
-    card hand[HAND_SIZE] = {
-        {7, clubs, 18, 0},
-        { 5, hearts, 33, 0},
-        {8, spades, 4, 0},
-        {9, spades, 3, 0},
-        {10, spades, 2, 0},
-        { 7, diamonds, 44, 0}, 
-        {11, spades, 1, 0}
-    };
+    card hand[HAND_SIZE];
     strength_counts strengths = {0};
     strength_probas probas={0};
     int i, epoch, pips[13]={0};
 
     build_deck(deck);
-    //print_hand(deck, DECK_SIZE);
     srand(time(NULL));
-    //srand(42);
-    epoch = 1;
-    //build_hand(deck, hand, epoch);
-    //print_hand(hand, HAND_SIZE);
-    sort_hand(hand, HAND_SIZE);
-    print_hand(hand, HAND_SIZE);
-    evaluate_test(hand);
-
     //run_until(deck);
-    // for (epoch=1; epoch<100000; epoch++)
-    //{
-    //     build_hand(deck, hand, epoch);
-    //     evaluate_hand(hand, &strengths);
-    //     putchar('\n');
-    // }
-    // calculate_avgs(strengths, &probas);
-    // print_statistics(strengths, probas);
+   
+    for (epoch=1; epoch<=100000000; epoch++)
+    {
+        build_hand(deck, hand, epoch);
+        
+        evaluate_hand(hand, &strengths);
+    }
+    calculate_avgs(strengths, &probas);
+    print_statistics(strengths, probas);
 
     return 0;
 }
