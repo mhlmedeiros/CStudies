@@ -3,7 +3,7 @@
 #include<ctype.h>
 
 
-typedef struct list {int data; struct list *next;} list;
+typedef struct list {int data; struct list *next;} list; // actually this is an element of a (linked) list
 
 int is_empty(const list *l){return (l==NULL);}
 
