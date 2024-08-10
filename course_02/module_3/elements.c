@@ -1,56 +1,63 @@
 #include<stdio.h>
 #include<stdlib.h>
-#define N_ELEMENTS 3
+#define N_ELEMENTS 1
 #define MAX_LEN_NAME 15
 
-typedef struct element 
+/*Struct to hold the chemical elements info
+*/typedef struct element 
 {
     char name[MAX_LEN_NAME]; 
     char symbol[3]; 
     float weight;
 } element;
 
-typedef struct listed_element
-{
-    element element;
-    struct listed_element * next_element;
+/*List struct for the elements*/
+typedef struct listed_element{ 
+    element element; 
+    struct listed_element *next_element;
 } listed_element;
 
-
-listed_element* create_element(listed_element* head)
+/*Function that asks the info about 
+the element and saves the data into
+a list.*/
+listed_element* create_element()
 {
-    head = malloc(sizeof(listed_element));
-    printf("Enter an chemical element:\n");
-    printf("\tname: ");
-    scanf("%s", head->element.name);
-    printf("\tsymbol: ");
-    scanf(" %s", head->element.symbol);
-    printf("\tatomic weight [ua]: ");
-    scanf("%f", &(head->element.weight));
+    listed_element *head;
 
+    head = malloc(sizeof(listed_element));
+    printf("\nEnter an chemical element:\n");
+    printf("%25s", "name: ");
+    scanf("%s", head->element.name);
+    printf("%25s", "symbol: ");
+    scanf("%s", head->element.symbol);
+    printf("%25s", "atomic weight [ua]: ");
+    scanf("%f", &(head->element.weight));
+    head->next_element = NULL;
+    
     return head;
 }
 
-
-listed_element* create_list()
+/*Function that  creates the list of elements*/
+listed_element* create_list(int n_elements)
 {
     int i;
     listed_element *head, *tail;
 
-    head = create_element(head);
-    head->next_element = tail;
-
-    for (i=0; i < N_ELEMENTS-1; i++)
+    head = create_element();
+    tail = head;
+    
+    for (i=0; i < n_elements-1; i++)
     {
-       tail = create_element(tail);
-       tail = tail->next_element; 
+       tail->next_element = create_element();
+       tail = tail->next_element;
     }
-    tail = NULL;
+
     return head;
 }
 
 
-
+/*Function that prints the elements of the list
+recursively.*/
 void print_list(listed_element* list)
 {
     if (list != NULL)
@@ -64,28 +71,24 @@ void print_list(listed_element* list)
     }
 }
 
+/*Function that prints the element table
+in a formatted fashion.*/
 void print_table(listed_element* list)
 {
     int i;
-    printf("#============================================#\n");
+    printf("\n\n#============================================#\n");
     printf("%15s%15s%15s\n","name", "symbol", "weigth");
     printf("#============================================#\n");
-    for (i=0; i<N_ELEMENTS; i++){
-        print_list(list);
-    }
+    print_list(list);
 }
 
 int main()
-{
-    //element H = {"Hydrogen", 'H', 1.00001};
+{   
+    int n_elements;
     listed_element* mendleev;
 
-    mendleev = create_list();
-
-    //mendleev->element = H;
-    //mendleev->next_element=NULL;
-
-    //mendleev->next_element=NULL;
-
+    printf("How many elements do you wanna enter: ");
+    scanf("%d", &n_elements);
+    mendleev = create_list(n_elements);
     print_table(mendleev);
 }
