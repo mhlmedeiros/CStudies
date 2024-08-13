@@ -1,0 +1,57 @@
+#include <stdio.h>
+//#include <stdlib.h>
+
+#define MAX_HW 20
+
+void read_data(FILE *ptr, int d[], int *size);
+void print_data(int d[], int size);
+double average(int d[], int size);
+
+
+int main(void)
+{
+    int i, sz = MAX_HW;
+    FILE *ifp;
+    int data[MAX_HW] = {100, 0};
+
+    ifp = fopen("my_scores","r");
+    read_data(ifp, data, &sz);
+    fclose(ifp);
+
+    printf("My scores are: ");
+    print_data(data, sz);
+    printf("and the average is %10f\n", average(data, sz));
+
+
+    return 0;
+}
+
+void read_data(FILE *ptr, int d[], int *size)
+{
+    *size = 0;
+    while (fscanf(ptr, "%d", &d[*size])==1)
+        (*size)++;
+}
+
+void print_data(int d[], int size)
+{
+    int i;
+    printf("\n[ ");
+    for(i=0; i<size; i++)
+    {
+        printf("%4d", d[i]);
+    }
+    printf("]\n");
+}
+
+double average(int d[], int size)
+{
+    int i; 
+    double sum=0;
+
+    for (i=0; i<size; i++)
+    {
+        sum += d[i];
+    }
+    return (sum/size);
+}
