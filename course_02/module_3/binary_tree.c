@@ -44,7 +44,8 @@ BTREE init_node(DATA d1, BTREE p1, BTREE p2){
 BTREE create_tree(DATA a[], int i, int size){
     if (i>=size)
         return NULL;
-    else
+    else{
+        printf("%d\n",i);
         return (
             init_node(
                 a[i], 
@@ -52,6 +53,7 @@ BTREE create_tree(DATA a[], int i, int size){
                 create_tree(a, 2*i + 2, size)
             )
         );
+    }
 }
 
 
