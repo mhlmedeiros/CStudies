@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-
+/* Definition of the struct that holds the rational numbers*/
 typedef struct rational {
     int numerator;
     int denominator;
 } rational;
 
+/*Function to print the content of a file*/
 void print_file(FILE *ifp)
 {
     char c;
@@ -21,6 +21,7 @@ void print_file(FILE *ifp)
     putchar('\n');
 }
 
+/*Function to print out the pairs */
 void print_pairs(FILE *ifp)
 {
     int i, n;
@@ -33,22 +34,22 @@ void print_pairs(FILE *ifp)
         fscanf(ifp, "%d", &num);
         fscanf(ifp, "%d", &den);
 
-        printf("%d: %d/%d\n", i, num, den);
+        printf("%d: (%d,%d)\n", i, num, den);
     }
 }
 
+/*Function to print out the a fraction */
 void print_fraction(rational fraction)
 {
     printf("%d/%d\n",fraction.numerator, fraction.denominator);
 }
 
-
+/*Builder function to generate the array of rationals*/
 rational* build_array(FILE* ifp, int *size)
 {
     int i;
     fscanf(ifp, "%d", size);
 
-    printf("%d\n\n", *size);
     rational *fractions = malloc(*size * sizeof(rational));
     
     for (i=0; i < *size; i++)
@@ -59,7 +60,7 @@ rational* build_array(FILE* ifp, int *size)
     return fractions;
 }
 
-
+/*Rotine to calculate the sum of 2 rational numbers*/
 rational* sum(rational a, rational b)
 {   
     rational *ans = malloc(sizeof(rational));
@@ -68,6 +69,7 @@ rational* sum(rational a, rational b)
     return ans;
 }
 
+/*Rotine to calculate the product of 2 rational numbers*/
 rational* multiplication(rational a, rational b)
 {   
     rational *ans = malloc(sizeof(rational));
@@ -76,6 +78,7 @@ rational* multiplication(rational a, rational b)
     return ans;
 }
 
+/*Rotine to calculate the division of 2 rational numbers*/
 rational* division(rational a, rational b)
 {   
     rational b_inv;
@@ -84,6 +87,7 @@ rational* division(rational a, rational b)
     return multiplication(a, b_inv);
 }
 
+/*Rotine to calculate the sum all rational numbers in a array*/
 rational* sum_all(rational* fractions, int size)
 {
     rational *summation=malloc(sizeof(rational));
@@ -109,43 +113,27 @@ int main(int argc, char *argv[])
 {
     int size;
     FILE *ifp;
-    //FILE *ofp;
     rational* fractions;
-    rational* s;
+    rational* summation;
     rational* average;
     rational* size_inv=malloc(sizeof(rational));
 
+    if (argc != 2){
+        printf("You have to pass an input file.\n");
+        exit(1);
+    }
     ifp = fopen(argv[1], "r+");
-    //ofp = fopen(argv[2], "w");
-    
-    
     fractions = build_array(ifp, &size);
-    
-    printf("OK\n");
-    printf("%d\n\n", size);
-
-    
-    s = sum(fractions[0], fractions[1]);
-    print_fraction(*s);
-
-    s = multiplication(fractions[0], fractions[1]);
-    print_fraction(*s);
-
-    s = division(fractions[0], fractions[1]);
-    print_fraction(*s);
-
-    s = sum_all(fractions, size);
-    print_fraction(*s);
-
+    summation = sum_all(fractions, size);
     size_inv->numerator = 1;
     size_inv->denominator = size;
+    average = multiplication(*summation, *size_inv);
 
-    average = multiplication(*s, *size_inv);
-
+    printf("The sum of all rationals is: ");
+    print_fraction(*summation);
+    printf("The average of the ratioals is: ");
     print_fraction(*average);
-
     fclose(ifp);
-    //fclose(ofp);
 
     return 0;
 }
